@@ -44,7 +44,7 @@ def plot_decision_boundary(model, X, y):
     plt.ylabel('x2')
     plt.xlabel('x1')
     plt.scatter(X[0, :], X[1, :], c=y.ravel(), cmap=plt.cm.Spectral)
-    #plt.show()
+    plt.show()
 
 
 X, Y = load_planar_dataset()
@@ -55,7 +55,7 @@ plt.scatter(X[0, :], X[1, :], c=np.squeeze(Y), s=40, cmap=plt.cm.Spectral)
 clf = sklearn.linear_model.LogisticRegressionCV()
 clf.fit(X.T, Y.T)
 
-plot_decision_boundary(lambda x: clf.predict(x), X, Y)
+plot_decision_boundary(X, Y)
 plt.title("Logistic Regression")
 
 LR_predictions = clf.predict(X.T)
