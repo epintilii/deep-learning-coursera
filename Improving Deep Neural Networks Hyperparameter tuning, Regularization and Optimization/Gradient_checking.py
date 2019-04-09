@@ -31,7 +31,7 @@ def gradient_check(x, theta, epsilon = 1e-7):
 
     return difference
 
-def forward_propagation(X, Y, parameters):
+def forward_propagation_n(X, Y, parameters):
     m = X.shape[1]
     W1 = parameters["W1"]
     W2 = parameters["W2"]
@@ -54,7 +54,7 @@ def forward_propagation(X, Y, parameters):
 
     return  cost, cache
 
-def backward_propagation(X, Y, cache):
+def backward_propagation_n(X, Y, cache):
     m = X.shape[1]
     (Z1, A1, W1, b1, Z2, A2, W2, b2, Z3, A3, W3, b3) = cache
 
@@ -77,6 +77,38 @@ def backward_propagation(X, Y, cache):
                  "dA1": dA1, "dZ1": dZ1, "dW1": dW1, "db1": db1}
 
     return gradients
+
+def gradient_check_n(parameters, gradients, X, Y, epsilon=1e-7):
+    parameters_values, _ = dictionary_to_vector(parameters)
+    grad = gradients_to_vector(gradients)
+    num_parameters = parameters_values.shape[0]
+    J_plus = np.zeros((num_parameters, 1))
+    J_minus = np.zeros((num_parameters, 1))
+    gradapprox = np.zeros((num_parameters, 1))
+
+    for i in range(num_parameters):
+        thetaplus = np.copy(parameters_values)
+        thetaplus[i][0] = thetaplus[i][0] + epsilon
+        J_plus[i][0], _ = forward_propagation_n(X, Y, vector_to_dictionary(thetaplus))
+
+        thetaminus = np.copy(parameters_values)
+        thetaminus[i][0] = thetaminus[i][0] - epsilon
+        J_minus[i][0], _ = forward_propagation_n(X, Y, vector_to_dictionary(thetaminus))
+
+        gradapprox[i] = (J_plus[i] - J_minus[i]) / (2*epsilon)
+
+    numerator = np.linalg.norm(grad - gradapprox)
+    denominator = np.linalg.norm(grad) + np.linalg.norm(gradapprox)
+    difference = numerator / denominator
+
+    if difference > 1e-7:
+        print("There is a mistake in the backward propagation, difference: " + str(difference))
+    else:
+        print("Your backward propagation works perfectly fine, difference: " + str(difference))
+
+    return difference
+
+
 
 
 
