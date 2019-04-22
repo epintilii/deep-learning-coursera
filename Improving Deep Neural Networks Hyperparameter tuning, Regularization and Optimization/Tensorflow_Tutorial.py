@@ -77,10 +77,23 @@ def ones(shape):
     return ones
 
 
+X_train_orig, Y_train_orig, X_test_orig, Y_test_orig, classes = load_dataset()
+
+X_train_flatten = X_train_orig.reshape(X_train_orig.shape[0], -1).T
+X_test_flatten = X_test_orig.reshape(X_test_orig.shape[0], -1).T
+
+X_train = X_train_flatten / 255
+X_test = X_test_flatten / 255
+
+Y_train = convert_to_one_hot(Y_train_orig, 6)
+Y_test = convert_to_one_hot(Y_test_orig, 6)
 
 
 
-
+def create_placeholders(n_x, n_y):
+    X = tf.placeholder(tf.float32, [n_x, None], name="X")
+    Y = tf.placeholder(tf.float32, [n_y, None], name="Y")
+    return X, Y
 
 
 
