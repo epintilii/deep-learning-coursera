@@ -115,3 +115,44 @@ def initialize_parameters():
                   "W3": W3,
                   "b3": b3}
     return parameters
+
+def forward_propagation(X, parameters):
+    W1 = parameters["W1"]
+    b1 = parameters["b1"]
+    W2 = parameters["W2"]
+    b2 = parameters["b2"]
+    W3 = parameters["W3"]
+    b3 = parameters["b3"]
+
+    Z1 = tf.add(tf.matmul(W1, X), b1)
+    A1 = tf.nn.relu(Z1)
+
+    Z2 = tf.add(tf.matmul(W2, A1), b2)
+    A2 = tf.nn.relu(Z2)
+
+    Z3 = tf.add(tf.matmul(W3, A2), b3)
+
+    return Z3
+
+
+tf.reset_default_graph()
+
+x_shape = 12288
+y_shape = 6
+
+with tf.Session() as sess:
+    X, Y = create_placeholders(x_shape, y_shape)
+    parameters = initialize_parameters()
+    Z3 = forward_propagation(X, parameters)
+    print("Z3 = "+ str(Z3))
+
+
+def compute_cost(Z3, Y):
+    logits = tf.transpose(Z3)
+    labels = tf.transpose(Y)
+
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
+    return cost
+
+# def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs = 1500,
+#           minibatch_size = 32, print_cost=True):
